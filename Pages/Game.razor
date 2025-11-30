@@ -1,0 +1,706 @@
+@page "/"
+@using Hearts.Models
+@using Hearts.Models.Enums
+@using Hearts.Services
+@inject GameService GameService
+
+
+<MudContainer MaxWidth="MaxWidth.False" Class="game-container">
+    
+    <!-- Spieltisch Mitte -->
+    <div class="game-table">
+        <div class="table-info">
+            <!-- Punkteanzeige -->
+                <MudPaper Elevation="3" Class="pa-3" Style="background: rgba(255,255,255,0.95); margin-bottom: 20px">
+                    <MudText Typo="Typo.subtitle1" Style="font-weight: bold; margin-bottom: 8px;">Punkte</MudText>
+                    @foreach (var player in GameService.Players)
+                    {
+                        <MudText Typo="Typo.body2" Style="display: flex; justify-content: space-between; gap: 16px;">
+                            <span>@player.Name:</span>
+                            <span style="font-weight: bold;">0</span>
+                        </MudText>
+                    }
+                </MudPaper>
+            <MudText Typo="Typo.body2" Style="opacity: 0.8;">Stich: @GameService.StichCount / 8</MudText>
+        </div>
+    </div>
+
+    <!-- Gespielte Karten -->
+    @if (GameService.Players[0].CurrentCard != null)
+    {
+    <div class="played-card-bottom">
+        <div class="playing-card medium" style="pointer-events: none;">
+            <span class="card-value @GetSuitColor(GameService.Players[0].CurrentCard!.Suit)">@GameService.Players[0].CurrentCard?.Value</span>
+            <span class="card-suit @GetSuitColor(GameService.Players[0].CurrentCard!.Suit)">@GetSuitSymbol(GameService.Players[0].CurrentCard!.Suit)</span>
+            <span class="card-value @GetSuitColor(GameService.Players[0].CurrentCard!.Suit)">@GameService.Players[0].CurrentCard!.Value</span>
+        </div>
+    </div>
+    }
+    
+    @if (GameService.Players[1].CurrentCard  != null)
+    {
+        <div class="played-card-left">
+            <div class="playing-card medium" style="pointer-events: none;">
+                <span class="card-value @GetSuitColor(GameService.Players[1].CurrentCard!.Suit)">@GameService.Players[1].CurrentCard!.Value</span>
+                <span class="card-suit @GetSuitColor(GameService.Players[1].CurrentCard!.Suit)">@GetSuitSymbol(GameService.Players[1].CurrentCard!.Suit)</span>
+                <span class="card-value @GetSuitColor(GameService.Players[1].CurrentCard!.Suit)">@GameService.Players[1].CurrentCard!.Value</span>
+            </div>
+        </div>
+    }
+    
+    @if (GameService.Players[2].CurrentCard != null)
+    {
+        <div class="played-card-top">
+            <div class="playing-card medium" style="pointer-events: none;">
+                <span class="card-value @GetSuitColor(GameService.Players[2].CurrentCard!.Suit)">@GameService.Players[2].CurrentCard!.Value</span>
+                <span class="card-suit @GetSuitColor(GameService.Players[2].CurrentCard!.Suit)">@GetSuitSymbol(GameService.Players[2].CurrentCard!.Suit)</span>
+                <span class="card-value @GetSuitColor(GameService.Players[2].CurrentCard!.Suit)">@GameService.Players[2].CurrentCard!.Value</span>
+            </div>
+        </div>
+    }
+    
+    @if (GameService.Players[3].CurrentCard != null)
+    {
+        <div class="played-card-right">
+            <div class="playing-card medium" style="pointer-events: none;">
+                <span class="card-value @GetSuitColor(GameService.Players[3].CurrentCard!.Suit)">@GameService.Players[3].CurrentCard!.Value</span>
+                <span class="card-suit @GetSuitColor(GameService.Players[3].CurrentCard!.Suit)">@GetSuitSymbol(GameService.Players[3].CurrentCard!.Suit)</span>
+                <span class="card-value @GetSuitColor(GameService.Players[3].CurrentCard!.Suit)">@GameService.Players[3].CurrentCard!.Value</span>
+            </div>
+        </div>
+    }
+
+    <!-- Unterer Spieler (Spielbar) -->
+    <div class="player-bottom">
+        <div class="player-name">@GameService.Players[0].Name | Stiche: @GameService.Players[0].Stiche.Count | Punkte: @GameService.Players[0].Punkte</div>
+        <div class="cards-container">
+            @foreach (var card in GameService.Players[0].Cards)
+            {
+            <div class="playing-card @(GetCardSize("bottom")) @(_selectedCard?.Id == card.Id ? "selected" : "")"
+                 @onclick="() => HandleCardClick(card)">
+                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Linker Spieler -->
+    <div class="player-left">
+        @if (GameService.Players[1].IsPlaying)
+        {
+            <MudPaper>
+                <MudText Color="Color.Warning">Spielt aus!</MudText>
+            </MudPaper>   
+        }
+        <div class="player-name">@GameService.Players[1].Name | Stiche: @GameService.Players[1].Stiche.Count | Punkte: @GameService.Players[1].Punkte</div>
+        <MudSelect T="Difficulty" @bind-Value="_player2Difficulty">
+            <MudSelectItem T="Difficulty" Value="Difficulty.Simple">Simple</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Easy">Easy (WIP)</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Normal">Normal (WIP)</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Hard">Hard (WIP)</MudSelectItem>
+        </MudSelect>
+        <div class="cards-container-vertical">
+            @foreach (var card in GameService.Players[1].Cards)
+            {
+                <div class="playing-card small card-rotated-left" style="pointer-events: none;">
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                    <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Oberer Spieler -->
+    <div class="player-top">
+        <div class="player-name">@GameService.Players[2].Name | Stiche: @GameService.Players[2].Stiche.Count | Punkte: @GameService.Players[2].Punkte</div>
+        <MudSelect T="Difficulty" @bind-Value="_player3Difficulty">
+            <MudSelectItem T="Difficulty" Value="Difficulty.Simple">Simple</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Easy">Easy (WIP)</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Normal">Normal (WIP)</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Hard">Hard (WIP)</MudSelectItem>
+        </MudSelect>
+        <div class="cards-container">
+            @foreach (var card in GameService.Players[2].Cards)
+            {
+            <div class="playing-card @(GetCardSize("top")) card-rotated-180" style="pointer-events: none;">
+                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Rechter Spieler -->
+    <div class="player-right">
+        <div class="player-name">@GameService.Players[3].Name | Stiche: @GameService.Players[3].Stiche.Count | Punkte: @GameService.Players[3].Punkte</div>
+        <MudSelect T="Difficulty" @bind-Value="_player4Difficulty">
+            <MudSelectItem T="Difficulty" Value="Difficulty.Simple">Simple</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Easy">Easy (WIP)</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Normal">Normal (WIP)</MudSelectItem>
+            <MudSelectItem T="Difficulty" Value="Difficulty.Hard">Hard (WIP)</MudSelectItem>
+        </MudSelect>
+        <div class="cards-container-vertical">
+            @foreach (var card in GameService.Players[3].Cards)
+            {
+            <div class="playing-card small card-rotated-right" style="pointer-events: none;">
+                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+            </div>
+            }
+        </div>
+    </div>
+</MudContainer>
+
+@code {
+private Card? _selectedCard;
+private TaskCompletionSource<Card>? _tcs;
+private bool _playerTurnCompleted;
+private bool _gameEnded;
+
+private Difficulty _player2Difficulty = Difficulty.Simple;
+private Difficulty _player3Difficulty = Difficulty.Simple;
+private Difficulty _player4Difficulty = Difficulty.Simple;
+
+
+protected override async Task OnInitializedAsync()
+{
+    GameService.Init();
+    await StartRound();
+}
+
+
+private async Task HandleCardClick(Card card)
+{
+_selectedCard = card;
+GameService.Players[0].CurrentCard = card;
+GameService.Players[0].Cards.Remove(card);
+
+if (_tcs is not null && !_tcs.Task.IsCompleted)
+{
+    _playerTurnCompleted = true;
+    _tcs.SetResult(card);
+}
+
+await InvokeAsync(StateHasChanged);
+}
+
+private async Task StartRound()
+{
+    _playerTurnCompleted = false;
+    if (GameService.PlayerToPlay == GameService.Players[0])
+    {
+        await YouStarted();
+    }
+    
+    if (GameService.PlayerToPlay == GameService.Players[1])
+    {
+        await Player2Started();
+    }
+    
+    if (GameService.PlayerToPlay == GameService.Players[2])
+    {
+        await Player3Started();
+    }
+    
+    if (GameService.PlayerToPlay == GameService.Players[3])
+    {
+        await Player4Started();
+    }
+
+    _playerTurnCompleted = true;
+}
+
+
+
+#region PlayerStarted
+
+private async Task YouStarted()
+{
+    GameService.CurrentStich = new Stich();
+    var card = await WaitForPlayerCard();
+    _selectedCard = card;
+    GameService.CurrentStich.Cards.Add(card);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+        
+    var card1 = await GameService.PlayCard(GameService.Players[1], _player2Difficulty);
+    GameService.CurrentStich.Cards.Add(card1);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+        
+    var card2 = await GameService.PlayCard(GameService.Players[2], _player3Difficulty);
+    GameService.CurrentStich.Cards.Add(card2);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+        
+    var card3 = await GameService.PlayCard(GameService.Players[3], _player4Difficulty);
+    GameService.CurrentStich.Cards.Add(card3);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+
+    GameService.CalculateStich(card);
+        
+    await Task.Delay(2000);
+
+    foreach (var player in GameService.Players)
+    {
+        player.CurrentCard = null;
+    }
+    await InvokeAsync(StateHasChanged);
+    await StartNewRound();
+}
+
+private async Task Player2Started()
+{
+    GameService.CurrentStich = new Stich();
+    var card1 = await GameService.PlayCard(GameService.Players[1], _player2Difficulty);
+    GameService.CurrentStich.Cards.Add(card1);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+    
+    var card2 = await GameService.PlayCard(GameService.Players[2], _player3Difficulty);
+    GameService.CurrentStich.Cards.Add(card2);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+        
+    var card3 = await GameService.PlayCard(GameService.Players[3], _player4Difficulty);
+    GameService.CurrentStich.Cards.Add(card3);
+    await InvokeAsync(StateHasChanged);
+    
+    var card = await WaitForPlayerCard();
+    _selectedCard = card;
+    GameService.CurrentStich.Cards.Add(card);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+
+    GameService.CalculateStich(card1);
+        
+    await Task.Delay(2000);
+
+    foreach (var player in GameService.Players)
+    {
+        player.CurrentCard = null;
+    }
+    await InvokeAsync(StateHasChanged);
+    await StartNewRound();
+}
+
+private async Task Player3Started()
+{
+    GameService.CurrentStich = new Stich();
+    
+    var card2 = await GameService.PlayCard(GameService.Players[2], _player3Difficulty);
+    GameService.CurrentStich.Cards.Add(card2);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+        
+    var card3 = await GameService.PlayCard(GameService.Players[3], _player4Difficulty);
+    GameService.CurrentStich.Cards.Add(card3);
+    await InvokeAsync(StateHasChanged);
+    
+    var card = await WaitForPlayerCard();
+    _selectedCard = card;
+    GameService.CurrentStich.Cards.Add(card);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+    
+    var card1 = await GameService.PlayCard(GameService.Players[1], _player2Difficulty);
+    GameService.CurrentStich.Cards.Add(card1);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+
+    GameService.CalculateStich(card2);
+        
+    await Task.Delay(2000);
+
+    foreach (var player in GameService.Players)
+    {
+        player.CurrentCard = null;
+    }
+    await InvokeAsync(StateHasChanged);
+    await StartNewRound();   
+}
+
+private async Task Player4Started()
+{
+    GameService.CurrentStich = new Stich();
+    
+    var card3 = await GameService.PlayCard(GameService.Players[3], _player4Difficulty);
+    GameService.CurrentStich.Cards.Add(card3);
+    await InvokeAsync(StateHasChanged);
+    
+    var card = await WaitForPlayerCard();
+    _selectedCard = card;
+    GameService.CurrentStich.Cards.Add(card);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+    
+    var card1 = await GameService.PlayCard(GameService.Players[1], _player2Difficulty);
+    GameService.CurrentStich.Cards.Add(card1);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+    
+    var card2 = await GameService.PlayCard(GameService.Players[2], _player3Difficulty);
+    GameService.CurrentStich.Cards.Add(card2);
+    await InvokeAsync(StateHasChanged);
+    await Task.Delay(1000);
+
+    GameService.CalculateStich(card3);
+        
+    await Task.Delay(2000);
+
+    foreach (var player in GameService.Players)
+    {
+        player.CurrentCard = null;
+    }
+    await InvokeAsync(StateHasChanged);
+    await StartNewRound();
+}
+
+private async Task EndRound()
+{
+    //Todo: Hier Logik für Beenden der Runde!
+    await GameService.EndRound();
+}
+
+#endregion
+
+#region Helper
+
+private string GetSuitSymbol(string suit)
+{
+    return suit switch
+    {
+        "hearts" => "♥",
+        "diamonds" => "♦",
+        "spades" => "♠",
+        "clubs" => "♣",
+        _ => ""
+    };
+}
+
+private string GetSuitColor(string suit)
+{
+    return suit switch
+    {
+        "hearts" => "red-suit",
+        "diamonds" => "red-suit",
+        "spades" => "black-suit",
+        "clubs" => "black-suit",
+        _ => ""
+    };
+}
+
+private string GetCardSize(string position)
+{
+    return position switch
+    {
+        "bottom" => "medium",
+        "top" => "small",
+        "left" => "small",
+        "right" => "small",
+        _ => "medium"
+    };
+}
+
+private async Task<Card> WaitForPlayerCard()
+{
+    _tcs = new TaskCompletionSource<Card>();
+    return await _tcs.Task;
+}
+
+private async Task StartNewRound()
+{
+    if (GameService.StichCount > 7)
+    {
+        await EndRound();
+        _gameEnded = true;
+        //Dialog hier?
+        await InvokeAsync(StateHasChanged);
+    }
+    else
+    {
+        await StartRound();   
+    }
+}
+
+#endregion
+
+}
+
+<style>
+    .game-container {
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #1b5e20 100%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        padding: 0;
+        margin: 0;
+    }
+
+    .game-table {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: clamp(200px, 40vw, 300px);
+        height: clamp(200px, 40vw, 300px);
+        border-radius: 50%;
+        background: rgba(27, 94, 32, 0.5);
+        border: 8px solid rgba(27, 94, 32, 0.3);
+        box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+    }
+
+    @@media (min-width: 600px) {
+    .game-table {
+        width: clamp(300px, 35vw, 400px);
+        height: clamp(300px, 35vw, 400px);
+    }
+    }
+
+    .table-info {
+        text-align: center;
+        color: white;
+    }
+
+    .playing-card {
+        background: white;
+        border-radius: 8px;
+        border: 2px solid #ccc;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .playing-card:hover {
+        transform: translateY(-20px) scale(1.1);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        z-index: 100;
+    }
+
+    .playing-card.selected {
+        box-shadow: 0 0 0 4px #2196F3;
+    }
+
+    .playing-card.small {
+        width: clamp(40px, 8vw, 48px);
+        height: clamp(60px, 12vw, 80px);
+        font-size: clamp(12px, 2vw, 14px);
+        padding: 4px;
+    }
+
+    .playing-card.medium {
+        width: clamp(48px, 10vw, 64px);
+        height: clamp(72px, 15vw, 96px);
+        font-size: clamp(14px, 2.5vw, 16px);
+        padding: 6px;
+    }
+
+    .playing-card.large {
+        width: clamp(60px, 12vw, 80px);
+        height: clamp(90px, 18vw, 112px);
+        font-size: clamp(16px, 3vw, 18px);
+    }
+
+    @@media (min-width: 600px) {
+    .playing-card.small {
+        width: 64px;
+        height: 96px;
+        font-size: 16px;
+        padding: 8px;
+    }
+    .playing-card.medium {
+        width: 80px;
+        height: 112px;
+        font-size: 18px;
+        padding: 8px;
+    }
+    }
+
+    .card-value {
+        font-weight: bold;
+    }
+
+    .card-suit {
+        font-size: clamp(18px, 4vw, 24px);
+    }
+
+    .red-suit {
+        color: #d32f2f;
+    }
+
+    .black-suit {
+        color: #212121;
+    }
+
+    .player-bottom {
+        position: absolute;
+        bottom: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 5;
+        max-width: 95vw;
+    }
+
+    .player-top {
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 5;
+        max-width: 95vw;
+    }
+
+    .player-left {
+        position: absolute;
+        left: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 5;
+        max-height: 90vh;
+    }
+
+    .player-right {
+        position: absolute;
+        right: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 5;
+        max-height: 90vh;
+    }
+
+    .player-name {
+        background: rgba(27, 94, 32, 0.8);
+        color: white;
+        padding: 2px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        font-size: clamp(11px, 2vw, 14px);
+    }
+
+    @@media (min-width: 600px) {
+    .player-name {
+        font-size: 16px;
+        padding: 4px 16px;
+        margin-bottom: 8px;
+    }
+    }
+
+    .cards-container {
+        display: flex;
+        gap: clamp(2px, 1vw, 8px);
+        flex-wrap: nowrap;
+    }
+
+    .cards-container-vertical {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(2px, 1vw, 8px);
+    }
+
+    .card-rotated-left {
+        transform: rotate(90deg);
+    }
+
+    .card-rotated-right {
+        transform: rotate(-90deg);
+    }
+
+    .card-rotated-180 {
+        transform: rotate(180deg);
+    }
+
+    .played-card-bottom {
+        position: absolute;
+        bottom: clamp(120px, 25vh, 200px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+    }
+
+    .played-card-top {
+        position: absolute;
+        top: clamp(120px, 25vh, 200px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+    }
+
+    .played-card-left {
+        position: absolute;
+        left: clamp(80px, 15vw, 150px);
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+    }
+
+    .played-card-right {
+        position: absolute;
+        right: clamp(80px, 15vw, 150px);
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+    }
+
+    .score-box {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        z-index: 20;
+        font-size: clamp(10px, 2vw, 14px);
+    }
+
+    @@media (min-width: 600px) {
+    .score-box {
+        top: 16px;
+        right: 16px;
+    }
+    }
+
+    .rules-box {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 20;
+        max-width: clamp(180px, 35vw, 250px);
+        font-size: clamp(10px, 2vw, 14px);
+    }
+
+    @@media (min-width: 600px) {
+    .rules-box {
+        top: 16px;
+        left: 16px;
+    }
+    }
+</style>
