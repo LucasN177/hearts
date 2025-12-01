@@ -18,11 +18,15 @@
                     {
                         <MudText Typo="Typo.body2" Style="display: flex; justify-content: space-between; gap: 16px;">
                             <span>@player.Name:</span>
-                            <span style="font-weight: bold;">0</span>
+                            <span style="font-weight: bold;">@player.Punkte</span>
                         </MudText>
                     }
                 </MudPaper>
             <MudText Typo="Typo.body2" Style="opacity: 0.8;">Stich: @GameService.StichCount / 8</MudText>
+            @if (_roundEnded)
+            {
+                <MudButton @onclick="NeueRunde">Mischen!</MudButton>
+            }
         </div>
     </div>
 
@@ -173,6 +177,7 @@
 private Card? _selectedCard;
 private TaskCompletionSource<Card>? _tcs;
 private bool _playerTurnCompleted;
+private bool _roundEnded;
 private bool _gameEnded;
 
 private Difficulty _player2Difficulty = Difficulty.Simple;
@@ -207,6 +212,11 @@ await InvokeAsync(StateHasChanged);
 
 private async Task StartRound()
 {
+    if (GameService.Stiche.Count > 7)
+    {
+        await EndRound();
+        return;
+    }
     _playerTurnCompleted = false;
     if (GameService.PlayerToPlay == GameService.Players[0])
     {
@@ -231,7 +241,13 @@ private async Task StartRound()
     _playerTurnCompleted = true;
 }
 
+public async Task NeueRunde()
+{
+    await GameService.NewRound();
+    await StartRound();
+    await InvokeAsync(StateHasChanged);
 
+}
 
 #region PlayerStarted
 
@@ -381,6 +397,7 @@ private async Task Player4Started()
 private async Task EndRound()
 {
     //Todo: Hier Logik für Beenden der Runde!
+    _roundEnded = true;
     await GameService.EndRound();
 }
 

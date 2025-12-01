@@ -127,7 +127,70 @@ public class GameService(PlayService playService)
             card.PlayedBy = Players[3];
         }
     }
-    
+
+
+    public async Task NewRound()
+    {
+        var diamonds = GenerateCards(8, Suit.Diamonds, 0);
+        var hearts = GenerateCards(8, Suit.Hearts, 8);
+        var spades = GenerateCards(8, Suit.Spades, 16);
+        var clubs = GenerateCards(8, Suit.Clubs, 24);
+        
+        Cards.AddRange(clubs);
+        Cards.AddRange(spades);
+        Cards.AddRange(hearts);
+        Cards.AddRange(diamonds);
+        AvailableCards.Clear();
+        AvailableCards.AddRange(Cards);
+        
+        ShuffleCards();
+        
+        var cardsPlayer1 = Cards.Take(8).ToList();
+        foreach (var card in cardsPlayer1)
+        {
+            Cards.Remove(card);
+        }
+        
+        var cardsPlayer2 = Cards.Take(8).ToList();
+        foreach (var card in cardsPlayer2)
+        {
+            Cards.Remove(card);
+        }
+        var cardsPlayer3 = Cards.Take(8).ToList();
+        foreach (var card in cardsPlayer3)
+        {
+            Cards.Remove(card);
+        }
+        
+        var cardsPlayer4 = Cards.Take(8).ToList();
+        foreach (var card in cardsPlayer4)
+        {
+            Cards.Remove(card);
+        }
+        
+        Players[0].Cards = cardsPlayer1;
+        Players[1].Cards = cardsPlayer2;
+        Players[2].Cards = cardsPlayer3;
+        Players[3].Cards = cardsPlayer4;
+        
+        ChooseBeginningPlayer();
+        foreach (var card in cardsPlayer1)
+        {
+            card.PlayedBy = Players[0];
+        }
+        foreach (var card in cardsPlayer2)
+        {
+            card.PlayedBy = Players[1];
+        }
+        foreach (var card in cardsPlayer3)
+        {
+            card.PlayedBy = Players[2];
+        }
+        foreach (var card in cardsPlayer4)
+        {
+            card.PlayedBy = Players[3];
+        }
+    }
     private static List<Card> GenerateCards(int count, Suit suit, int startId)
     {
         var values = new[] { "7", "8", "9", "10", "B", "D", "K", "A" };
