@@ -1,5 +1,6 @@
 @page "/"
 @using MudBlazor
+@inject NavigationManager NavigationManager
 
 <MudThemeProvider Theme="_theme" />
 
@@ -392,6 +393,15 @@
     private void SelectMode(PlayMode mode)
     {
         _selectedMode = mode;
+        if (mode == PlayMode.NewGame)
+        {
+           NavigationManager.NavigateTo("Game"); 
+        }
+
+        if (mode == PlayMode.Settings)
+        {
+            NavigationManager.NavigateTo("Settings");
+        }
     }
 
     private string GetModeText(PlayMode mode)
