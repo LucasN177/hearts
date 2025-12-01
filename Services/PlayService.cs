@@ -162,9 +162,9 @@ public class PlayService
     }
 
     // Karte aus Hand nehmen
-    player.Cards.Remove(chosen);
-    player.CurrentCard = chosen;
-    currentStich.Cards.Add(chosen);
+    //player.Cards.Remove(chosen);
+    //player.CurrentCard = chosen;
+    //currentStich.Cards.Add(chosen);
 
     return chosen;
 }
@@ -238,7 +238,7 @@ public class PlayService
     Card chosen;
 
     //
-    // 👉 1. Wenn Stich eröffnet wird
+    // 1. Wenn Stich eröffnet wird
     //
     if (isFirst)
     {
@@ -259,7 +259,7 @@ public class PlayService
     }
 
     //
-    // 👉 2. Farbe bedienen
+    // 2. Farbe bedienen
     //
     else
     {
@@ -285,7 +285,7 @@ public class PlayService
         else
         {
             //
-            // 👉 3. Farbe kann nicht bedient werden → abwerfen
+            // 3. Farbe kann nicht bedient werden → abwerfen
             // Risikobasiert: Punktekarten möglichst dann abwerfen, wenn sicher
             //
 
@@ -295,7 +295,7 @@ public class PlayService
             Card? queenSpades = hand
                 .FirstOrDefault(c => c.Suit == Suit.Spades && c.Value == "D");
 
-            if (queenSpades != null && lastPlayer)
+            if (queenSpades != null)
             {
                 chosen = queenSpades;
             }
@@ -327,9 +327,9 @@ public class PlayService
     }
 
     // Karte ausspielen
-    player.Cards.Remove(chosen);
-    player.CurrentCard = chosen;
-    currentStich.Cards.Add(chosen);
+    //player.Cards.Remove(chosen);
+    //player.CurrentCard = chosen;
+    //currentStich.Cards.Add(chosen);
 
     return chosen;
 }
@@ -354,7 +354,7 @@ public class PlayService
         if (legalCards.Count == 1)
         {
             var only = legalCards[0];
-            ApplyPlay(player, currentStich, only);
+            //ApplyPlay(player, currentStich, only);
             return only;
         }
 
@@ -378,7 +378,7 @@ public class PlayService
         // Falls MonteCarlo liefert -> wählen, sonst heuristisch besten
         Card chosen = bestByMC ?? heuristicScores.OrderBy(kv => kv.Value).First().Key;
 
-        ApplyPlay(player, currentStich, chosen);
+        //ApplyPlay(player, currentStich, chosen);
         return chosen;
     }
 

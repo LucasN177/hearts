@@ -3,6 +3,7 @@
 @using Hearts.Models.Enums
 @using Hearts.Services
 @inject GameService GameService
+@inject SettingService SettingService
 
 
 <MudContainer MaxWidth="MaxWidth.False" Class="game-container">
@@ -72,16 +73,19 @@
 
     <!-- Unterer Spieler (Spielbar) -->
     <div class="player-bottom">
-        <div class="player-name">@GameService.Players[0].Name | Stiche: @GameService.Players[0].Stiche.Count | Punkte: @GameService.Players[0].Punkte</div>
+        <MudStack Row="true">
+            <div class="player-name">@GameService.Players[0].Name | Stiche: @GameService.Players[0].Stiche.Count | Punkte: @GameService.Players[0].Punkte</div>
+            <MudButton ButtonType="ButtonType.Button" @onclick="GameService.SortCards" class="player-name">Sortieren</MudButton>
+        </MudStack>
         <div class="cards-container">
             @foreach (var card in GameService.Players[0].Cards)
             {
-            <div class="playing-card @(GetCardSize("bottom")) @(_selectedCard?.Id == card.Id ? "selected" : "")"
-                 @onclick="() => HandleCardClick(card)">
-                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
-                <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
-                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
-            </div>
+                <div class="playing-card @(GetCardSize("bottom")) @(_selectedCard?.Id == card.Id ? "selected" : "")"
+                     @onclick="() => HandleCardClick(card)">
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                    <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                </div>
             }
         </div>
     </div>
@@ -105,9 +109,12 @@
             @foreach (var card in GameService.Players[1].Cards)
             {
                 <div class="playing-card small card-rotated-left" style="pointer-events: none;">
-                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
-                    <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
-                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                    @if (SettingService.ComponentCardsVisibility)
+                    {
+                        <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                        <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                        <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>   
+                    }
                 </div>
             }
         </div>
@@ -126,9 +133,12 @@
             @foreach (var card in GameService.Players[2].Cards)
             {
             <div class="playing-card @(GetCardSize("top")) card-rotated-180" style="pointer-events: none;">
-                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
-                <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
-                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                @if (SettingService.ComponentCardsVisibility)
+                {
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                    <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>   
+                }
             </div>
             }
         </div>
@@ -147,9 +157,12 @@
             @foreach (var card in GameService.Players[3].Cards)
             {
             <div class="playing-card small card-rotated-right" style="pointer-events: none;">
-                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
-                <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
-                <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                @if (SettingService.ComponentCardsVisibility)
+                {
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                    <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>   
+                }
             </div>
             }
         </div>
@@ -169,6 +182,9 @@ private Difficulty _player4Difficulty = Difficulty.Simple;
 
 protected override async Task OnInitializedAsync()
 {
+    _player2Difficulty = SettingService.Player2Difficulty;
+    _player3Difficulty = SettingService.Player3Difficulty;
+    _player4Difficulty = SettingService.Player4Difficulty;
     GameService.Init();
     await StartRound();
 }

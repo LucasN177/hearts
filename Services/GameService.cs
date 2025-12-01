@@ -174,5 +174,11 @@ public class GameService(PlayService playService)
         PlayerToPlay.IsPlaying = true;
     }
 
+    public void SortCards()
+    {
+        Players[0].Cards.Sort((a, b) => a.Id.CompareTo(b.Id));
+        Players[0].Cards.Reverse();
+    }
+
     #endregion
 }
