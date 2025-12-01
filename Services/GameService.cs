@@ -66,10 +66,10 @@ public class GameService(PlayService playService)
     public void Init()
     {
         
-        var diamonds = GenerateCards(8, "diamonds", 0);
-        var hearts = GenerateCards(8, "hearts", 8);
-        var spades = GenerateCards(8, "spades", 16);
-        var clubs = GenerateCards(8, "clubs", 24);
+        var diamonds = GenerateCards(8, Suit.Diamonds, 0);
+        var hearts = GenerateCards(8, Suit.Hearts, 8);
+        var spades = GenerateCards(8, Suit.Spades, 16);
+        var clubs = GenerateCards(8, Suit.Clubs, 24);
         
         Cards.AddRange(clubs);
         Cards.AddRange(spades);
@@ -127,7 +127,7 @@ public class GameService(PlayService playService)
         }
     }
     
-    private static List<Card> GenerateCards(int count, string suit, int startId)
+    private static List<Card> GenerateCards(int count, Suit suit, int startId)
     {
         var values = new[] { "7", "8", "9", "10", "B", "D", "K", "A" };
         var cards = new List<Card>();
@@ -135,12 +135,12 @@ public class GameService(PlayService playService)
         for (int i = 0; i < count; i++)
         {
             var punkte = 0;
-            if (suit == "hearts")
+            if (suit == Suit.Hearts)
             {
                 punkte = 1;
             }
 
-            if (suit == "spades" && values[i] == "D")
+            if (suit == Suit.Spades && values[i] == "D")
             {
                 punkte = 8;
             }

@@ -372,26 +372,26 @@ private async Task EndRound()
 
 #region Helper
 
-private string GetSuitSymbol(string suit)
+private string GetSuitSymbol(Suit suit)
 {
     return suit switch
     {
-        "hearts" => "♥",
-        "diamonds" => "♦",
-        "spades" => "♠",
-        "clubs" => "♣",
+        Suit.Hearts => "♥",
+        Suit.Diamonds => "♦",
+        Suit.Spades => "♠",
+        Suit.Clubs=> "♣",
         _ => ""
     };
 }
 
-private string GetSuitColor(string suit)
+private string GetSuitColor(Suit suit)
 {
     return suit switch
     {
-        "hearts" => "red-suit",
-        "diamonds" => "red-suit",
-        "spades" => "black-suit",
-        "clubs" => "black-suit",
+        Suit.Hearts => "red-suit",
+        Suit.Diamonds => "red-suit",
+        Suit.Spades => "black-suit",
+        Suit.Clubs => "black-suit",
         _ => ""
     };
 }
@@ -660,6 +660,7 @@ private async Task StartNewRound()
     .played-card-left {
         position: absolute;
         left: clamp(80px, 15vw, 150px);
+        margin-left: clamp(80px, 15vw, 150px);
         top: 50%;
         transform: translateY(-50%);
         z-index: 10;
@@ -668,6 +669,7 @@ private async Task StartNewRound()
     .played-card-right {
         position: absolute;
         right: clamp(80px, 15vw, 150px);
+        margin-right: clamp(80px, 15vw, 150px);
         top: 50%;
         transform: translateY(-50%);
         z-index: 10;
