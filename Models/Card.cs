@@ -8,6 +8,5 @@ public class Card
     public Suit Suit { get; set; } = Suit.Default;
     public string Value { get; set; } = "";
     public int Punkte { get; set; } = 0;
-    
     public Player PlayedBy { get; set; }
 }

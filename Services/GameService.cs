@@ -34,6 +34,7 @@ public class GameService(PlayService playService)
         }
         cards.Sort((x, y) => x.Id.CompareTo(y.Id));
         var playerToReceive = cards.Last().PlayedBy;
+        CurrentStich.WonBy = playerToReceive;
         playerToReceive.Stiche.Add(CurrentStich);
         PlayerToPlay = playerToReceive;
         StichCount++;
@@ -45,7 +46,7 @@ public class GameService(PlayService playService)
     public async Task<Card> PlayCard(Player player, Difficulty difficulty)
     {
         if (player != Players[1] && player != Players[2] && player != Players[3]) return new Card();
-        var card = await playService.PlayerPlay(player, difficulty, CurrentStich);
+        var card = await playService.PlayerPlay(player, difficulty, CurrentStich, AvailableCards, Stiche);
         player.CurrentCard = card;
         player.Cards.Remove(card);
         return card;
