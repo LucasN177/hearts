@@ -1,0 +1,420 @@
+@page "/"
+@using MudBlazor
+
+<MudThemeProvider Theme="_theme" />
+
+<div class="hearts-container">
+    <!-- Animated background hearts -->
+    <div class="hearts-background">
+        @for (int i = 0; i < 20; i++)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Favorite" 
+                     Class="floating-heart" 
+                     Style="@GetHeartStyle(i)" />
+        }
+    </div>
+
+    <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="hearts-content">
+        <!-- Header -->
+        <div class="text-center header-section">
+            <div class="d-flex align-center justify-center mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Favorite" 
+                         Color="Color.Error" 
+                         Size="Size.Large" 
+                         Class="heart-icon-large pulse" />
+                <MudText Typo="Typo.h1" Class="ml-3 main-title">Hearts</MudText>
+            </div>
+            <MudText Typo="Typo.h5" Class="subtitle">Das klassische Stichspiel</MudText>
+        </div>
+
+        <!-- Menu Grid -->
+        <MudGrid Spacing="3" Class="menu-grid">
+            <MudItem xs="12" sm="6" lg="4">
+                <MudPaper Class="menu-card gradient-red" @onclick="() => SelectMode(PlayMode.NewGame)">
+                    <div class="card-content">
+                        <div class="icon-wrapper gradient-red-bg">
+                            <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Size="Size.Large" Color="Color.Surface" />
+                        </div>
+                        <MudText Typo="Typo.h6" Class="card-title">Neues Spiel</MudText>
+                        <MudText Typo="Typo.body2" Class="card-description">Starte eine neue Partie Hearts</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" lg="4">
+                <MudPaper Class="menu-card gradient-blue" @onclick="() => SelectMode(PlayMode.Multiplayer)">
+                    <div class="card-content">
+                        <div class="icon-wrapper gradient-blue-bg">
+                            <MudIcon Icon="@Icons.Material.Filled.Groups" Size="Size.Large" Color="Color.Surface" />
+                        </div>
+                        <MudText Typo="Typo.h6" Class="card-title">Mehrspieler</MudText>
+                        <MudText Typo="Typo.body2" Class="card-description">Spiele online mit Freunden</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" lg="4">
+                <MudPaper Class="menu-card gradient-yellow" @onclick="() => SelectMode(PlayMode.Leaderboard)">
+                    <div class="card-content">
+                        <div class="icon-wrapper gradient-yellow-bg">
+                            <MudIcon Icon="@Icons.Material.Filled.EmojiEvents" Size="Size.Large" Color="Color.Surface" />
+                        </div>
+                        <MudText Typo="Typo.h6" Class="card-title">Bestenliste</MudText>
+                        <MudText Typo="Typo.body2" Class="card-description">Zeige deine Erfolge</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" lg="4">
+                <MudPaper Class="menu-card gradient-green" @onclick="() => SelectMode(PlayMode.Rules)">
+                    <div class="card-content">
+                        <div class="icon-wrapper gradient-green-bg">
+                            <MudIcon Icon="@Icons.Material.Filled.MenuBook" Size="Size.Large" Color="Color.Surface" />
+                        </div>
+                        <MudText Typo="Typo.h6" Class="card-title">Spielregeln</MudText>
+                        <MudText Typo="Typo.body2" Class="card-description">Lerne Hearts zu spielen</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" sm="6" lg="4">
+                <MudPaper Class="menu-card gradient-purple" @onclick="() => SelectMode(PlayMode.Settings)">
+                    <div class="card-content">
+                        <div class="icon-wrapper gradient-purple-bg">
+                            <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Large" Color="Color.Surface" />
+                        </div>
+                        <MudText Typo="Typo.h6" Class="card-title">Einstellungen</MudText>
+                        <MudText Typo="Typo.body2" Class="card-description">Passe das Spiel an</MudText>
+                    </div>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+
+        <!-- Statistics Bar -->
+        <MudPaper Class="stats-bar">
+            <MudGrid>
+                <MudItem xs="4" Class="text-center">
+                    <MudText Typo="Typo.h4" Class="stat-value">127</MudText>
+                    <MudText Typo="Typo.body2" Class="stat-label">Gespielte Runden</MudText>
+                </MudItem>
+                <MudItem xs="4" Class="text-center">
+                    <MudText Typo="Typo.h4" Class="stat-value stat-success">68%</MudText>
+                    <MudText Typo="Typo.body2" Class="stat-label">Gewinnrate</MudText>
+                </MudItem>
+                <MudItem xs="4" Class="text-center">
+                    <MudText Typo="Typo.h4" Class="stat-value stat-warning">#42</MudText>
+                    <MudText Typo="Typo.body2" Class="stat-label">Globaler Rang</MudText>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+
+        <!-- Selected Mode Indicator -->
+        @if (_selectedMode.HasValue)
+        {
+            <div class="text-center selected-section">
+                <MudChip T="string" Icon="@Icons.Material.Filled.Check" 
+                         Color="Color.Success" 
+                         Size="Size.Medium" 
+                         Class="selected-chip">
+                    @GetModeText(_selectedMode.Value) ausgewählt
+                </MudChip>
+            </div>
+        }
+    </MudContainer>
+</div>
+
+<style>
+    .hearts-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #0f172a 100%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+
+    .hearts-background {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+
+    .floating-heart {
+        position: absolute;
+        color: #ef4444;
+        opacity: 0.1;
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    .hearts-content {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        padding: 1rem 0;
+    }
+
+    @@media (min-width: 960px) {
+        .hearts-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hearts-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+
+    .header-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .menu-grid {
+        margin-bottom: 1.5rem;
+    }
+
+    .selected-section {
+        margin-top: 1rem;
+    }
+
+    .heart-icon-large {
+        font-size: 2.5rem !important;
+    }
+
+    .main-title {
+        color: white;
+        font-size: 3rem !important;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+        color: #d1d5db;
+        font-weight: 300;
+        font-size: 1.1rem !important;
+    }
+
+    .menu-card {
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem !important;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .menu-card:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .icon-wrapper {
+        display: inline-flex;
+        padding: 0.5rem;
+        border-radius: 0.75rem;
+        margin-bottom: 0.75rem;
+        transition: transform 0.3s ease;
+    }
+
+    .menu-card:hover .icon-wrapper {
+        transform: scale(1.1);
+    }
+
+    .gradient-red-bg {
+        background: linear-gradient(135deg, #ef4444 0%, #ec4899 100%);
+    }
+
+    .gradient-blue-bg {
+        background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    }
+
+    .gradient-yellow-bg {
+        background: linear-gradient(135deg, #eab308 0%, #f97316 100%);
+    }
+
+    .gradient-green-bg {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .gradient-purple-bg {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .card-title {
+        color: white;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-description {
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+
+    /* Responsive Anpassungen */
+    @@media (max-width: 960px) {
+        .main-title {
+            font-size: 2.5rem !important;
+        }
+
+        .heart-icon-large {
+            font-size: 2rem !important;
+        }
+
+        .subtitle {
+            font-size: 1rem !important;
+        }
+
+        .stat-value {
+            font-size: 1.5rem !important;
+        }
+    }
+
+    @@media (max-width: 600px) {
+        .main-title {
+            font-size: 2rem !important;
+        }
+
+        .heart-icon-large {
+            font-size: 1.5rem !important;
+        }
+
+        .subtitle {
+            font-size: 0.9rem !important;
+        }
+
+        .header-section {
+            margin-bottom: 1rem;
+        }
+
+        .menu-card {
+            padding: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 1rem !important;
+        }
+
+        .card-description {
+            font-size: 0.75rem;
+        }
+
+        .stats-bar {
+            padding: 0.75rem;
+        }
+
+        .stat-value {
+            font-size: 1.25rem !important;
+        }
+
+        .stat-label {
+            font-size: 0.75rem !important;
+        }
+    }
+
+    .stats-bar {
+        background: rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem !important;
+        padding: 1rem;
+    }
+
+    .stat-value {
+        color: white;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        font-size: 1.75rem !important;
+    }
+
+    .stat-success {
+        color: #10b981 !important;
+    }
+
+    .stat-warning {
+        color: #eab308 !important;
+    }
+
+    .stat-label {
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+
+    .selected-chip {
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .pulse {
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.5;
+        }
+    }
+</style>
+
+@code {
+    private MudTheme _theme = new MudTheme();
+    private PlayMode? _selectedMode;
+    private Random _random = new Random();
+
+    private enum PlayMode
+    {
+        NewGame,
+        Multiplayer,
+        Leaderboard,
+        Rules,
+        Settings
+    }
+
+    private void SelectMode(PlayMode mode)
+    {
+        _selectedMode = mode;
+    }
+
+    private string GetModeText(PlayMode mode)
+    {
+        return mode switch
+        {
+            PlayMode.NewGame => "Neues Spiel",
+            PlayMode.Multiplayer => "Mehrspieler",
+            PlayMode.Leaderboard => "Bestenliste",
+            PlayMode.Rules => "Spielregeln",
+            PlayMode.Settings => "Einstellungen",
+            _ => ""
+        };
+    }
+
+    private string GetHeartStyle(int index)
+    {
+        var left = _random.Next(0, 100);
+        var top = _random.Next(0, 100);
+        var size = _random.Next(20, 60);
+        var delay = _random.NextDouble() * 3;
+        var duration = _random.NextDouble() * 3 + 2;
+
+        return $"left: {left}%; top: {top}%; font-size: {size}px; animation-delay: {delay}s; animation-duration: {duration}s;";
+    }
+}
