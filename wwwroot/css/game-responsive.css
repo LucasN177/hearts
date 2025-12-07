@@ -1,0 +1,177 @@
+/* Mobile-spezifische Styles (bis 768px) */
+@media (max-width: 768px) {
+
+    /* Spieltisch kleiner machen */
+    .game-table {
+        transform: scale(0.7);
+        margin: 10px 0;
+    }
+
+    .table-info {
+        font-size: 0.8rem;
+    }
+
+    /* Gespielte Karten in der Mitte kleiner */
+    .played-card-bottom .playing-card,
+    .played-card-left .playing-card,
+    .played-card-top .playing-card,
+    .played-card-right .playing-card {
+        width: 40px !important;
+        height: 56px !important;
+        font-size: 0.6rem !important;
+    }
+
+    .played-card-bottom .card-suit,
+    .played-card-left .card-suit,
+    .played-card-top .card-suit,
+    .played-card-right .card-suit {
+        font-size: 1.2rem !important;
+    }
+
+    /* Unterer Spieler (User) - Karten GRÖSSER */
+    .player-bottom {
+        padding: 10px 5px;
+    }
+
+    .player-bottom .playing-card {
+        width: 70px !important;
+        height: 98px !important;
+        font-size: 1rem !important;
+        margin: 0 -15px;
+    }
+
+    .player-bottom .playing-card .card-value {
+        font-size: 1.1rem !important;
+    }
+
+    .player-bottom .playing-card .card-suit {
+        font-size: 2rem !important;
+    }
+
+    .player-bottom .playing-card.selected {
+        transform: translateY(-20px) scale(1.05);
+    }
+
+    .player-bottom .cards-container {
+        justify-content: center;
+        overflow-x: auto;
+        padding: 10px 0;
+    }
+
+    /* Linker Spieler - viel kleiner */
+    .player-left {
+        left: 5px;
+        transform: scale(0.5);
+        transform-origin: left center;
+    }
+
+    .player-left .playing-card {
+        width: 35px !important;
+        height: 49px !important;
+        margin: -8px 0;
+    }
+
+    .player-left .player-name {
+        font-size: 0.7rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+
+    /* Oberer Spieler - viel kleiner */
+    .player-top {
+        top: 10px;
+        transform: scale(0.5);
+        transform-origin: top center;
+    }
+
+    .player-top .playing-card {
+        width: 35px !important;
+        height: 49px !important;
+        margin: 0 -8px;
+    }
+
+    .player-top .player-name {
+        font-size: 0.7rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Rechter Spieler - viel kleiner */
+    .player-right {
+        right: 5px;
+        transform: scale(0.5);
+        transform-origin: right center;
+    }
+
+    .player-right .playing-card {
+        width: 35px !important;
+        height: 49px !important;
+        margin: -8px 0;
+    }
+
+    .player-right .player-name {
+        font-size: 0.7rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 150px;
+    }
+
+    /* MudSelect Dropdowns kleiner */
+    .player-left .mud-select,
+    .player-top .mud-select,
+    .player-right .mud-select {
+        font-size: 0.7rem;
+        max-width: 100px;
+    }
+
+    /* Spielername und Button bei unterem Spieler */
+    .player-bottom .player-name {
+        font-size: 0.9rem;
+    }
+
+    .player-bottom .mud-button {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+}
+
+/* Sehr kleine Bildschirme (bis 480px) */
+@media (max-width: 480px) {
+
+    .player-bottom .playing-card {
+        width: 60px !important;
+        height: 84px !important;
+        margin: 0 -18px;
+    }
+
+    .player-bottom .playing-card .card-value {
+        font-size: 0.9rem !important;
+    }
+
+    .player-bottom .playing-card .card-suit {
+        font-size: 1.8rem !important;
+    }
+
+    /* Andere Spieler noch kleiner */
+    .player-left,
+    .player-right {
+        transform: scale(0.4);
+    }
+
+    .player-top {
+        transform: scale(0.4);
+    }
+
+    /* Gespielte Karten noch kleiner */
+    .played-card-bottom .playing-card,
+    .played-card-left .playing-card,
+    .played-card-top .playing-card,
+    .played-card-right .playing-card {
+        width: 30px !important;
+        height: 42px !important;
+    }
+}
