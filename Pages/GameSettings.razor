@@ -3,51 +3,75 @@
 @using Hearts.Services
 @inject SettingService SettingService
 @inject NavigationManager NavigationManager
-
-<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
-    <MudPaper Elevation="3" Class="pa-8">
-        <MudStack Spacing="6">
-            <!-- Header -->
-            <MudStack Spacing="2" AlignItems="AlignItems.Center">
-                <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Large" Color="Color.Primary" />
-                <MudText Typo="Typo.h4" Align="Align.Center">
-                    <strong>Spieleinstellungen</strong>
-                </MudText>
-                <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary">
-                    Wähle die Schwierigkeitsstufe für jeden KI-Spieler
+<style>
+        .hearts-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #0f172a 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+    </style>
+<div class="hearts-container">
+<MudGrid Justify="Justify.Center" Style="z-index: 10; max-width: 100%; position: relative">
+    <!-- Header Section -->
+    <MudItem xs="12">
+        <MudPaper Elevation="0" Class="pa-6 mb-4" Style="background: linear-gradient(135deg, var(--mud-palette-primary) 0%, var(--mud-palette-secondary) 100%);">
+            <MudStack AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Large" Style="color: white; font-size: 3rem;" />
+                <MudText Typo="Typo.h3" Style="color: white; font-weight: 600;">Spieleinstellungen</MudText>
+                <MudText Typo="Typo.body1" Style="color: rgba(255,255,255,0.9);">
+                    Passe dein Hearts-Erlebnis individuell an
                 </MudText>
             </MudStack>
+        </MudPaper>
+    </MudItem>
 
-            <MudDivider />
-
-            <!-- Player Settings -->
+    <!-- Left Column - AI Players -->
+    <MudItem xs="12" md="7">
+        <MudPaper Elevation="4" Class="pa-6">
             <MudStack Spacing="4">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.SmartToy" Color="Color.Primary" />
+                    <MudText Typo="Typo.h5" Style="font-weight: 600;">KI-Spieler</MudText>
+                </MudStack>
+                <MudText Typo="Typo.body2" Color="Color.Secondary">
+                    Wähle die Schwierigkeitsstufe für jeden Computer-Gegner
+                </MudText>
+
+                <MudDivider />
+
                 <!-- Player 2 -->
-                <MudCard Elevation="2" Outlined="true">
+                <MudCard Elevation="2" Outlined="true" Class="rounded-lg">
                     <MudCardContent>
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                            <MudAvatar Color="Color.Secondary" Size="Size.Large">2</MudAvatar>
+                            <MudAvatar Color="Color.Secondary" Size="Size.Large" Style="font-weight: 600;">2</MudAvatar>
                             <MudStack Spacing="1" Style="flex: 1;">
-                                <MudText Typo="Typo.h6">Spieler 2</MudText>
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">Spieler 2</MudText>
                                 <MudSelect T="Difficulty" 
                                            @bind-Value="@SettingService.Player2Difficulty"
                                            Variant="Variant.Outlined"
+                                           Dense="true"
                                            AnchorOrigin="Origin.BottomCenter">
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Simple">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentVerySatisfied" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentVerySatisfied" Size="Size.Small" Color="Color.Success" />
                                             <MudText>Einfach</MudText>
                                         </MudStack>
                                     </MudSelectItem>
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Easy">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfied" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfied" Size="Size.Small" Color="Color.Info" />
                                             <MudText>Leicht</MudText>
                                         </MudStack>
                                     </MudSelectItem>
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Normal">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentNeutral" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentNeutral" Size="Size.Small" Color="Color.Warning" />
                                             <MudText>Normal</MudText>
                                         </MudStack>
                                     </MudSelectItem>
@@ -64,31 +88,32 @@
                 </MudCard>
 
                 <!-- Player 3 -->
-                <MudCard Elevation="2" Outlined="true">
+                <MudCard Elevation="2" Outlined="true" Class="rounded-lg">
                     <MudCardContent>
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                            <MudAvatar Color="Color.Tertiary" Size="Size.Large">3</MudAvatar>
+                            <MudAvatar Color="Color.Tertiary" Size="Size.Large" Style="font-weight: 600;">3</MudAvatar>
                             <MudStack Spacing="1" Style="flex: 1;">
-                                <MudText Typo="Typo.h6">Spieler 3</MudText>
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">Spieler 3</MudText>
                                 <MudSelect T="Difficulty" 
                                            @bind-Value="@SettingService.Player3Difficulty"
                                            Variant="Variant.Outlined"
+                                           Dense="true"
                                            AnchorOrigin="Origin.BottomCenter">
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Simple">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentVerySatisfied" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentVerySatisfied" Size="Size.Small" Color="Color.Success" />
                                             <MudText>Einfach</MudText>
                                         </MudStack>
                                     </MudSelectItem>
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Easy">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfied" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfied" Size="Size.Small" Color="Color.Info" />
                                             <MudText>Leicht</MudText>
                                         </MudStack>
                                     </MudSelectItem>
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Normal">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentNeutral" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentNeutral" Size="Size.Small" Color="Color.Warning" />
                                             <MudText>Normal</MudText>
                                         </MudStack>
                                     </MudSelectItem>
@@ -105,31 +130,32 @@
                 </MudCard>
 
                 <!-- Player 4 -->
-                <MudCard Elevation="2" Outlined="true">
+                <MudCard Elevation="2" Outlined="true" Class="rounded-lg">
                     <MudCardContent>
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                            <MudAvatar Color="Color.Success" Size="Size.Large">4</MudAvatar>
+                            <MudAvatar Color="Color.Success" Size="Size.Large" Style="font-weight: 600;">4</MudAvatar>
                             <MudStack Spacing="1" Style="flex: 1;">
-                                <MudText Typo="Typo.h6">Spieler 4</MudText>
+                                <MudText Typo="Typo.h6" Style="font-weight: 600;">Spieler 4</MudText>
                                 <MudSelect T="Difficulty" 
                                            @bind-Value="@SettingService.Player4Difficulty"
                                            Variant="Variant.Outlined"
+                                           Dense="true"
                                            AnchorOrigin="Origin.BottomCenter">
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Simple">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentVerySatisfied" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentVerySatisfied" Size="Size.Small" Color="Color.Success" />
                                             <MudText>Einfach</MudText>
                                         </MudStack>
                                     </MudSelectItem>
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Easy">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfied" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentSatisfied" Size="Size.Small" Color="Color.Info" />
                                             <MudText>Leicht</MudText>
                                         </MudStack>
                                     </MudSelectItem>
                                     <MudSelectItem T="Difficulty" Value="Difficulty.Normal">
                                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                            <MudIcon Icon="@Icons.Material.Filled.SentimentNeutral" Size="Size.Small" />
+                                            <MudIcon Icon="@Icons.Material.Filled.SentimentNeutral" Size="Size.Small" Color="Color.Warning" />
                                             <MudText>Normal</MudText>
                                         </MudStack>
                                     </MudSelectItem>
@@ -139,37 +165,209 @@
                                             <MudText>Schwer</MudText>
                                         </MudStack>
                                     </MudSelectItem>
+                                    <MudSelectItem T="Difficulty" Value="Difficulty.VeryHard">
+                                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                            <MudIcon Icon="@Icons.Material.Filled.Dangerous" Size="Size.Small" Color="Color.Error" />
+                                            <MudText>Sehr Schwer</MudText>
+                                        </MudStack>
+                                    </MudSelectItem>
                                 </MudSelect>
                             </MudStack>
                         </MudStack>
                     </MudCardContent>
                 </MudCard>
-                <MudCard>
-                    <MudCardHeader>Karten der Gegener sichtbar?</MudCardHeader>
-                    <MudCardContent>
-                        <MudSwitch T="bool" @bind-Value="SettingService.ComponentCardsVisibility">Sichtbarkeit</MudSwitch>
-                    </MudCardContent>
-                </MudCard>
             </MudStack>
-            
-            <MudDivider />
+        </MudPaper>
+    </MudItem>
 
-            <!-- Action Button -->
-            <MudButton Variant="Variant.Filled" 
-                       Color="Color.Primary" 
-                       Size="Size.Large"
-                       FullWidth="true"
-                       StartIcon="@Icons.Material.Filled.PlayArrow"
-                       OnClick="StartGame">
-                Spiel Starten
-            </MudButton>
+    <!-- Right Column - Game Settings -->
+    <MudItem xs="12" md="5">
+        <MudStack Spacing="3">
+            <!-- Display Settings -->
+            <MudPaper Elevation="4" Class="pa-6">
+                <MudStack Spacing="3">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Visibility" Color="Color.Primary" />
+                        <MudText Typo="Typo.h6" Style="font-weight: 600;">Anzeigeoptionen</MudText>
+                    </MudStack>
+                        
+                    <MudDivider />
+
+                    <MudStack Spacing="3">
+                        <MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1" Style="font-weight: 500;">Gegnerkarten sichtbar</MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary" Style="font-size: 0.875rem;">
+                                        Zeigt die Karten aller Spieler an
+                                    </MudText>
+                                </MudStack>
+                                <MudSwitch T="bool" @bind-Value="SettingService.ComponentCardsVisibility" Color="Color.Primary" />
+                            </MudStack>
+                        </MudStack>
+
+                        <MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1" Style="font-weight: 500;">Animationen</MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary" Style="font-size: 0.875rem;">
+                                        Kartenbewegungen animieren
+                                    </MudText>
+                                </MudStack>
+                                <MudSwitch T="bool" @bind-Value="@_animationsEnabled" Color="Color.Primary" />
+                            </MudStack>
+                        </MudStack>
+
+                        <MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1" Style="font-weight: 500;">Spielzüge anzeigen</MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary" Style="font-size: 0.875rem;">
+                                        Hinweise für gültige Züge
+                                    </MudText>
+                                </MudStack>
+                                <MudSwitch T="bool" @bind-Value="@_showValidMoves" Color="Color.Primary" />
+                            </MudStack>
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+
+            <!-- Game Rules Settings -->
+            <MudPaper Elevation="4" Class="pa-6">
+                <MudStack Spacing="3">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.Gavel" Color="Color.Primary" />
+                        <MudText Typo="Typo.h6" Style="font-weight: 600;">Spielregeln</MudText>
+                    </MudStack>
+                        
+                    <MudDivider />
+
+                    <MudStack Spacing="3">
+                        <MudStack>
+                            <MudText Typo="Typo.body1" Style="font-weight: 500;">Punktelimit</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mb-2" Style="font-size: 0.875rem;">
+                                Spiel endet bei erreichen dieser Punktzahl
+                            </MudText>
+                            <MudSlider T="int" @bind-Value="@_pointLimit" Min="50" Max="200" Step="10" 
+                                       Color="Color.Primary" Variant="Variant.Filled">
+                                @_pointLimit Punkte
+                            </MudSlider>
+                        </MudStack>
+
+                        <MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1" Style="font-weight: 500;">Shoot the Moon</MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary" Style="font-size: 0.875rem;">
+                                        Alle Herzen & Pik-Dame = 0 Punkte
+                                    </MudText>
+                                </MudStack>
+                                <MudSwitch T="bool" @bind-Value="@_shootTheMoonEnabled" Color="Color.Primary" />
+                            </MudStack>
+                        </MudStack>
+
+                        <MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1" Style="font-weight: 500;">Kartenweitergabe</MudText>
+                                    <MudText Typo="Typo.body2" Color="Color.Secondary" Style="font-size: 0.875rem;">
+                                        3 Karten vor jeder Runde tauschen
+                                    </MudText>
+                                </MudStack>
+                                <MudSwitch T="bool" @bind-Value="@_cardPassingEnabled" Color="Color.Primary" />
+                            </MudStack>
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+
+            <!-- Sound Settings -->
+            <MudPaper Elevation="4" Class="pa-6">
+                <MudStack Spacing="3">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@Icons.Material.Filled.VolumeUp" Color="Color.Primary" />
+                        <MudText Typo="Typo.h6" Style="font-weight: 600;">Audio</MudText>
+                    </MudStack>
+                        
+                    <MudDivider />
+
+                    <MudStack Spacing="3">
+                        <MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText Typo="Typo.body1" Style="font-weight: 500;">Soundeffekte</MudText>
+                                <MudSwitch T="bool" @bind-Value="@_soundEffectsEnabled" Color="Color.Primary" />
+                            </MudStack>
+                        </MudStack>
+
+                        <MudStack>
+                            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                                <MudText Typo="Typo.body1" Style="font-weight: 500;">Hintergrundmusik</MudText>
+                                <MudSwitch T="bool" @bind-Value="@_musicEnabled" Color="Color.Primary" />
+                            </MudStack>
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
         </MudStack>
-    </MudPaper>
-</MudContainer>
+    </MudItem>
+
+    <!-- Action Buttons -->
+    <MudItem xs="12">
+        <MudPaper Elevation="4" Class="pa-4">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" Spacing="3">
+                <MudButton Variant="Variant.Outlined" 
+                           Color="Color.Default" 
+                           Size="Size.Large"
+                           StartIcon="@Icons.Material.Filled.RestartAlt"
+                           OnClick="ResetToDefaults">
+                    Zurücksetzen
+                </MudButton>
+                    
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           Size="Size.Large"
+                           StartIcon="@Icons.Material.Filled.PlayArrow"
+                           Style="padding-left: 3rem; padding-right: 3rem;"
+                           OnClick="StartGame">
+                    Spiel Starten
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+</div>
 
 @code {
+    // Zusätzliche Settings (müssen im SettingService hinzugefügt werden)
+    private bool _animationsEnabled = true;
+    private bool _showValidMoves = true;
+    private int _pointLimit = 100;
+    private bool _shootTheMoonEnabled = true;
+    private bool _cardPassingEnabled = true;
+    private bool _soundEffectsEnabled = true;
+    private bool _musicEnabled = false;
+
     private async Task StartGame()
     {
+        // Speichere alle Einstellungen im SettingService
         NavigationManager.NavigateTo("Game");
+    }
+
+    private void ResetToDefaults()
+    {
+        SettingService.Player2Difficulty = Difficulty.Normal;
+        SettingService.Player3Difficulty = Difficulty.Normal;
+        SettingService.Player4Difficulty = Difficulty.Normal;
+        SettingService.ComponentCardsVisibility = false;
+        
+        _animationsEnabled = true;
+        _showValidMoves = true;
+        _pointLimit = 100;
+        _shootTheMoonEnabled = true;
+        _cardPassingEnabled = true;
+        _soundEffectsEnabled = true;
+        _musicEnabled = false;
     }
 }

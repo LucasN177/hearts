@@ -25,7 +25,7 @@
             <MudText Typo="Typo.body2" Style="opacity: 0.8;">Stich: @GameService.StichCount / 8</MudText>
             @if (_roundEnded)
             {
-                <MudButton @onclick="NeueRunde">Mischen!</MudButton>
+                <MudButton @onclick="NeueRunde" Variant="Variant.Outlined" Color="Color.Error" Size="Size.Large">Mischen!</MudButton>
             }
         </div>
     </div>
@@ -77,6 +77,12 @@
 
     <!-- Unterer Spieler (Spielbar) -->
     <div class="player-bottom">
+        @if (GameService.Players[0].IsPlaying)
+        {
+            <MudPaper>
+                <MudText Color="Color.Warning">Du spielst aus!</MudText>
+            </MudPaper>   
+        }
         <MudStack Row="true">
             <div class="player-name">@GameService.Players[0].Name | Stiche: @GameService.Players[0].Stiche.Count | Punkte: @GameService.Players[0].Punkte</div>
             <MudButton ButtonType="ButtonType.Button" @onclick="GameService.SortCards" class="player-name">Sortieren</MudButton>
@@ -126,6 +132,12 @@
 
     <!-- Oberer Spieler -->
     <div class="player-top">
+        @if (GameService.Players[2].IsPlaying)
+        {
+            <MudPaper>
+                <MudText Color="Color.Warning">Spielt aus!</MudText>
+            </MudPaper>   
+        }
         <div class="player-name">@GameService.Players[2].Name | Stiche: @GameService.Players[2].Stiche.Count | Punkte: @GameService.Players[2].Punkte</div>
         <MudSelect T="Difficulty" @bind-Value="_player3Difficulty">
             <MudSelectItem T="Difficulty" Value="Difficulty.Simple">Simple</MudSelectItem>
@@ -136,20 +148,26 @@
         <div class="cards-container">
             @foreach (var card in GameService.Players[2].Cards)
             {
-            <div class="playing-card @(GetCardSize("top")) card-rotated-180" style="pointer-events: none;">
-                @if (SettingService.ComponentCardsVisibility)
-                {
-                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
-                    <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
-                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>   
-                }
-            </div>
+                <div class="playing-card @(GetCardSize("top")) card-rotated-180" style="pointer-events: none;">
+                    @if (SettingService.ComponentCardsVisibility)
+                    {
+                        <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                        <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                        <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                    }
+                </div>
             }
         </div>
     </div>
 
     <!-- Rechter Spieler -->
     <div class="player-right">
+        @if (GameService.Players[3].IsPlaying)
+        {
+            <MudPaper>
+                <MudText Color="Color.Warning">Spielt aus!</MudText>
+            </MudPaper>   
+        }
         <div class="player-name">@GameService.Players[3].Name | Stiche: @GameService.Players[3].Stiche.Count | Punkte: @GameService.Players[3].Punkte</div>
         <MudSelect T="Difficulty" @bind-Value="_player4Difficulty">
             <MudSelectItem T="Difficulty" Value="Difficulty.Simple">Simple</MudSelectItem>
@@ -160,14 +178,14 @@
         <div class="cards-container-vertical">
             @foreach (var card in GameService.Players[3].Cards)
             {
-            <div class="playing-card small card-rotated-right" style="pointer-events: none;">
-                @if (SettingService.ComponentCardsVisibility)
-                {
-                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
-                    <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
-                    <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>   
-                }
-            </div>
+                <div class="playing-card small card-rotated-right" style="pointer-events: none;">
+                    @if (SettingService.ComponentCardsVisibility)
+                    {
+                        <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                        <span class="card-suit @GetSuitColor(card.Suit)">@GetSuitSymbol(card.Suit)</span>
+                        <span class="card-value @GetSuitColor(card.Suit)">@card.Value</span>
+                    }
+                </div>
             }
         </div>
     </div>
@@ -218,24 +236,46 @@ private async Task StartRound()
         return;
     }
     _playerTurnCompleted = false;
-    if (GameService.PlayerToPlay == GameService.Players[0])
+    if (GameService.Players[0].IsPlaying)
     {
-        await YouStarted();
+        if (!_gameEnded)
+        {
+            await YouStarted(); 
+            GameService.Players[0].IsPlaying = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        
     }
     
-    if (GameService.PlayerToPlay == GameService.Players[1])
+    if (GameService.Players[1].IsPlaying)
     {
-        await Player2Started();
+        if (!_gameEnded)
+        {
+            await Player2Started(); 
+            GameService.Players[1].IsPlaying = false;
+            await InvokeAsync(StateHasChanged);
+        }
+        
     }
     
-    if (GameService.PlayerToPlay == GameService.Players[2])
+    if (GameService.Players[2].IsPlaying)
     {
-        await Player3Started();
+        if (!_gameEnded)
+        {
+            await Player3Started();
+            GameService.Players[2].IsPlaying = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
     
-    if (GameService.PlayerToPlay == GameService.Players[3])
+    if (GameService.Players[3].IsPlaying)
     {
-        await Player4Started();
+        if (!_gameEnded)
+        {
+            await Player4Started();
+            GameService.Players[3].IsPlaying = false;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     _playerTurnCompleted = true;
@@ -396,9 +436,9 @@ private async Task Player4Started()
 
 private async Task EndRound()
 {
-    //Todo: Hier Logik für Beenden der Runde!
     _roundEnded = true;
     await GameService.EndRound();
+    
 }
 
 #endregion
@@ -660,6 +700,9 @@ private async Task StartNewRound()
         display: flex;
         flex-direction: column;
         gap: clamp(2px, 1vw, 8px);
+        max-height: 70vh;
+        margin-top: 10px;
+        z-index: -1;
     }
 
     .card-rotated-left {

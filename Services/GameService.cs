@@ -18,11 +18,50 @@ public class GameService(PlayService playService)
 
     public List<Stich> Stiche { get; set; } = new List<Stich>();
     
+    /// <summary>
+    /// Method will be called after alle stiche are played.
+    /// </summary>
     public async Task EndRound()
     {
         //Todo: Hier Logik für Beenden der Runde!
+        //Check for Durchmarsch
+        if (Players[0].Stiche.Count == 8)
+        {
+            Players[0].Punkte =- 16;
+            Players[1].Punkte =+ 16;
+            Players[2].Punkte =+ 16;
+            Players[3].Punkte =+ 16;
+        }
+        if (Players[1].Stiche.Count == 8)
+        {
+            Players[1].Punkte =- 16;
+            Players[0].Punkte =+ 16;
+            Players[2].Punkte =+ 16;
+            Players[3].Punkte =+ 16;
+        }
+        if (Players[2].Stiche.Count == 8)
+        {
+            Players[2].Punkte =- 16;
+            Players[1].Punkte =+ 16;
+            Players[0].Punkte =+ 16;
+            Players[3].Punkte =+ 16;
+        }
+        if (Players[3].Stiche.Count == 8)
+        {
+            Players[3].Punkte =- 16;
+            Players[1].Punkte =+ 16;
+            Players[2].Punkte =+ 16;
+            Players[0].Punkte =+ 16;
+        }
+
+        
+        
     }
 
+    /// <summary>
+    /// Method will be called after every Stich
+    /// </summary>
+    /// <param name="firstPlayedCard"></param>
     public void CalculateStich(Card firstPlayedCard)
     {
         if(CurrentStich == null)
@@ -36,6 +75,8 @@ public class GameService(PlayService playService)
         var playerToReceive = cards.Last().PlayedBy;
         CurrentStich.WonBy = playerToReceive;
         playerToReceive.Stiche.Add(CurrentStich);
+        firstPlayedCard.PlayedBy.IsPlaying = false;
+        playerToReceive.IsPlaying = true;
         PlayerToPlay = playerToReceive;
         StichCount++;
         AddPoints(CurrentStich, playerToReceive);
@@ -233,7 +274,9 @@ public class GameService(PlayService playService)
     private void ChooseBeginningPlayer()
     {
         var random = new Random();
-        PlayerToPlay = Players[random.Next(0,3)];
+        var randomInt = random.Next(0, 3);
+        PlayerToPlay = Players[randomInt];
+        Players[randomInt].IsPlaying = true;
         PlayerToPlay.IsPlaying = true;
     }
 
